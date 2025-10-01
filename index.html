@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Varuna - Cloudburst Early Warning System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #0a0a0a;
+            --secondary-bg: #1a1a2e;
+            --tertiary-bg: #16213e;
+            --card-bg: rgba(26, 26, 46, 0.8);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --border-glow: rgba(0, 255, 255, 0.3);
+            --primary-cyan: #00ffff;
+            --electric-blue: #0080ff;
+            --neon-purple: #9d4edd;
+            --neon-green: #39ff14;
+            --danger-red: #ff073a;
+            --warning-orange: #ff8c00;
+            --text-primary: #ffffff;
+            --text-secondary: #b8c5d6;
+            --text-muted: #6c757d;
+            --glow-primary: 0 0 5px var(--primary-cyan);
+            --glow-secondary: 0 0 8px var(--electric-blue);
+            --shadow-deep: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 50%, var(--tertiary-bg) 100%);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Advanced Particle System */
+        .particle-system {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-particle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--primary-cyan) 0%, transparent 70%);
+            animation: float 20s infinite linear;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.7; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        /* Enhanced Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glow);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--primary-cyan), var(--electric-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: var(--glow-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.2rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-cyan);
+            transform: translateY(-2px);
+            box-shadow: var(--glow-primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            z-index: 10;
+            max-width: 900px;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary-cyan), var(--electric-blue), var(--neon-purple));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 4s ease-in-out infinite;
+            text-shadow: var(--glow-primary);
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero p {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+        
+        .hero .subtitle {
+             font-size: clamp(1.5rem, 4vw, 2.2rem);
+             font-family: 'Orbitron', monospace;
+             margin-bottom: 3rem;
+        }
+
+
+        .cta-button {
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary-cyan), var(--electric-blue));
+            border: none;
+            border-radius: 50px;
+            color: var(--primary-bg);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: var(--glow-primary), var(--shadow-deep);
+        }
+
+        /* Section Styling */
+        .section {
+            min-height: 100vh;
+            padding: 8rem 2rem 4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .section-header {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 4rem;
+            background: linear-gradient(45deg, var(--primary-cyan), var(--electric-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            position: relative;
+        }
+        
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(45deg, var(--primary-cyan), var(--electric-blue));
+            border-radius: 2px;
+            box-shadow: var(--glow-primary);
+        }
+
+        /* Glass Card System */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-deep);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--border-glow);
+            box-shadow: var(--glow-secondary), var(--shadow-deep);
+        }
+
+        /* Button System */
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 1400px;
+        }
+
+        .action-btn {
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--card-bg) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s;
+            backdrop-filter: blur(10px);
+        }
+        
+        .action-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .action-btn:hover:not(:disabled) {
+            transform: translateY(-5px);
+            border-color: var(--primary-cyan);
+            box-shadow: var(--glow-primary);
+            color: var(--primary-cyan);
+        }
+
+        .action-btn i {
+            margin-right: 0.8rem;
+            font-size: 1.3rem;
+        }
+        
+        /* Blockchain Visualizer */
+        .blockchain-container {
+            width: 100%;
+            max-width: 1600px;
+            overflow-x: auto;
+            padding: 2rem 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-cyan) transparent;
+        }
+        .blockchain-display {
+            display: flex;
+            gap: 2rem;
+            padding: 1rem;
+            min-width: fit-content;
+        }
+
+        .block {
+            min-width: 350px;
+            background: linear-gradient(135deg, var(--card-bg) 0%, rgba(255, 255, 255, 0.08) 100%);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.5s;
+            backdrop-filter: blur(15px);
+            box-shadow: var(--shadow-deep);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .block:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--glow-primary), var(--shadow-deep);
+        }
+
+        .block.invalid {
+            border-color: var(--danger-red);
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .block-index {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-cyan);
+        }
+        
+        .hash-display {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.8rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-cyan);
+            margin: 1rem 0;
+            word-break: break-all;
+        }
+
+        .transaction-list { margin-top: 1.5rem; }
+
+        .transaction-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 0.8rem 0;
+            border-left: 3px solid var(--neon-green);
+        }
+        
+        .transaction-item.high-risk { border-left-color: var(--danger-red); }
+        .transaction-item.medium-risk { border-left-color: var(--warning-orange); }
+
+        /* Activity Log */
+        .activity-log {
+            height: 400px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-cyan) transparent;
+        }
+
+        .log-entry {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 10px;
+            border-left: 4px solid;
+            animation: slideInRight 0.5s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .log-entry.success { border-color: var(--neon-green); background: rgba(57, 255, 20, 0.1); }
+        .log-entry.info { border-color: var(--primary-cyan); background: rgba(0, 255, 255, 0.1); }
+        .log-entry.warning { border-color: var(--warning-orange); background: rgba(255, 140, 0, 0.1); }
+        .log-entry.danger { border-color: var(--danger-red); background: rgba(255, 7, 58, 0.1); }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* Two Column Layout */
+        .two-col-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1400px;
+            align-items: center;
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 1400px;
+        }
+        .feature-card {
+            background: var(--glass-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-cyan);
+            box-shadow: var(--glow-secondary);
+        }
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-cyan);
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 0 10px var(--primary-cyan));
+        }
+        .feature-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Map Section */
+        #live-map-container {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1600px;
+        }
+        #map {
+            width: 100%;
+            height: 700px;
+            border-radius: 15px;
+            border: 1px solid var(--border-glow);
+            background-color: var(--tertiary-bg);
+        }
+        
+        /* Dashboard & Sensor Grids */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 1600px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+        }
+        .stat-value {
+            font-family: 'Orbitron';
+            font-size: 3rem;
+            color: var(--primary-cyan);
+        }
+        .stat-label {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+        .chart-container {
+            position: relative;
+            height: 200px; 
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        /* IoT Pod & Wristband Section */
+        .iot-pod-image {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 15px;
+            filter: drop-shadow(0 0 20px var(--electric-blue));
+            margin-bottom: 2rem;
+        }
+        .spec-list {
+            list-style: none;
+            text-align: left;
+            margin: 0 auto;
+            max-width: 300px;
+        }
+        .spec-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .spec-list i {
+            margin-right: 1rem;
+            color: var(--primary-cyan);
+        }
+
+        .iot-sos-button {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ff4d4d, var(--danger-red));
+            border: 5px solid rgba(255, 7, 58, 0.5);
+            color: white;
+            font-family: 'Orbitron';
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(255, 7, 58, 0.5);
+        }
+        .iot-sos-button.active {
+            animation: sos-pulse 1s infinite;
+        }
+        @keyframes sos-pulse {
+            0% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 7, 58, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(255, 7, 58, 1); }
+            100% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 7, 58, 0.5); }
+        }
+        
+        /* Alert Modal */
+        #alert-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #alert-modal.show { display: flex; opacity: 1; }
+        
+        .alert-box {
+            background: radial-gradient(circle, rgba(255, 7, 58, 0.2), var(--tertiary-bg));
+            border: 2px solid var(--danger-red);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 600px;
+            box-shadow: 0 0 50px var(--danger-red);
+            animation: pulse-danger 2s infinite;
+        }
+        
+        @keyframes pulse-danger {
+            0% { box-shadow: 0 0 30px rgba(255, 7, 58, 0.5); }
+            50% { box-shadow: 0 0 60px rgba(255, 7, 58, 1); }
+            100% { box-shadow: 0 0 30px rgba(255, 7, 58, 0.5); }
+        }
+
+        .alert-box i { font-size: 5rem; color: var(--danger-red); margin-bottom: 2rem; }
+        .alert-box h2 { font-family: 'Orbitron'; font-size: 2.5rem; color: var(--danger-red); margin-bottom: 1rem; }
+        
+        /* Architecture Diagram */
+        .arch-diagram {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .arch-node {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-glow);
+            width: 180px;
+        }
+        .arch-arrow {
+            font-size: 2rem;
+            color: var(--primary-cyan);
+        }
+
+        /* Translator Chatbot */
+        #translator-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-cyan);
+            background: linear-gradient(135deg, var(--electric-blue), var(--primary-cyan));
+            color: var(--primary-bg);
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2000;
+            box-shadow: var(--glow-primary);
+            transition: all 0.3s ease;
+        }
+        #translator-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px var(--primary-cyan);
+        }
+        #translator-popup {
+            position: fixed;
+            bottom: 6.5rem;
+            right: 2rem;
+            width: 400px;
+            height: 500px;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--border-glow);
+            background: var(--tertiary-bg);
+            box-shadow: var(--shadow-deep);
+            z-index: 1999;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+        }
+        #translator-popup.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        #translator-popup iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .two-col-layout, #live-map-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .section { padding: 6rem 1rem 2rem; }
+            .btn-grid, .feature-grid, .dashboard-grid, .arch-diagram { grid-template-columns: 1fr; }
+            .arch-arrow { transform: rotate(90deg); }
+            #translator-popup {
+                width: calc(100vw - 2rem);
+                height: 70vh;
+                right: 1rem;
+                bottom: 6rem;
+            }
+        }
+
+        .loading-spinner {
+            width: 20px; height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid var(--primary-cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="particle-system" id="particleSystem"></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">Project Varuna</div>
+            <ul class="nav-links">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#sensor-dashboard">Live Dashboard</a></li>
+                <li><a href="#live-map">Risk Map</a></li>
+                <li><a href="#ai-center">AI Anomaly Center</a></li>
+                <li><a href="#blockchain-demo">Immutable Ledger</a></li>
+                <li><a href="#aegis-wristband">Aegis Wristband</a></li>
+                <li><a href="#iot-pod">Jatayu Sensor Pod</a></li>
+                <li><a href="#alert-system">Alert System</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Cloudburst Alert Modal -->
+    <div id="alert-modal">
+        <div class="alert-box">
+            <i class="fas fa-cloud-showers-heavy"></i>
+            <h2>IMMINENT CLOUDBURST DETECTED</h2>
+            <p id="alert-location-text">High-confidence anomaly detected near Sensor Pod UK-42. Predicted inundation path has been calculated. Evacuate immediately.</p>
+            <button class="action-btn" id="alert-dismiss-btn" style="background: var(--danger-red); color: white;">Acknowledge</button>
+        </div>
+    </div>
+
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <h1>Project Varuna</h1>
+            <p class="subtitle">AI-Powered Cloudburst Prediction for Uttarakhand</p>
+            <p>A hyperlocal early warning system using a dense IoT sensor network, AI-driven anomaly detection, and a blockchain ledger to safeguard lives and property in hilly regions.</p>
+            <button class="cta-button" onclick="document.getElementById('sensor-dashboard').scrollIntoView()">
+                View Live Data
+            </button>
+        </div>
+    </section>
+
+    <section id="sensor-dashboard" class="section">
+        <h2 class="section-header">Live Sensor Network Dashboard</h2>
+        <div class="dashboard-grid">
+            <div class="stat-card glass-card">
+                <div class="stat-value" id="rainfall-stat">--</div>
+                <div class="stat-label">Avg. Rainfall Rate (mm/hr)</div>
+                <div class="chart-container"><canvas id="rainfall-chart"></canvas></div>
+            </div>
+            <div class="stat-card glass-card">
+                <div class="stat-value" id="humidity-stat">--</div>
+                <div class="stat-label">Avg. Humidity (%)</div>
+                <div class="chart-container"><canvas id="humidity-chart"></canvas></div>
+            </div>
+            <div class="stat-card glass-card">
+                <div class="stat-value" id="pressure-stat">--</div>
+                <div class="stat-label">Avg. Pressure (hPa)</div>
+                <div class="chart-container"><canvas id="pressure-chart"></canvas></div>
+            </div>
+            <div class="stat-card glass-card">
+                <div class="stat-value" id="active-sensors-stat">100</div>
+                <div class="stat-label">Active 'Jatayu' Pods</div>
+                 <div id="network-status" style="color:var(--neon-green); margin-top:1rem; font-weight:bold;">NETWORK STATUS: OPERATIONAL</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="live-map" class="section">
+        <h2 class="section-header">Hyperlocal Risk Assessment Map</h2>
+        <div id="live-map-container">
+            <div id="map"></div>
+            <div class="glass-card">
+                <h3 style="color: var(--primary-cyan); margin-bottom: 1rem;"><i class="fas fa-layer-group"></i> Map Layers</h3>
+                <ul class="spec-list">
+                    <li><i class="fas fa-rss"></i> Sensor Network (Heatmap)</li>
+                    <li><i class="fas fa-users"></i> Population Density</li>
+                    <li><i class="fas fa-mountain"></i> Topography</li>
+                    <li><i class="fas fa-water"></i> AI Predicted Flow Path</li>
+                </ul>
+                <h3 style="color: var(--primary-cyan); margin-top: 2rem; margin-bottom: 1rem;"><i class="fas fa-info-circle"></i> Legend</h3>
+                 <ul class="spec-list">
+                    <li style="color:#39ff14"><i class="fas fa-circle"></i> Low Risk</li>
+                    <li style="color:#ffd700"><i class="fas fa-circle"></i> Moderate Risk</li>
+                    <li style="color:#ff8c00"><i class="fas fa-circle"></i> High Risk</li>
+                    <li style="color:#ff073a"><i class="fas fa-circle"></i> Extreme Risk</li>
+                </ul>
+                <button id="simulate-alert-btn" class="action-btn" style="width:100%; margin-top: 2rem; background: linear-gradient(135deg, var(--warning-orange), var(--danger-red));">
+                    <i class="fas fa-exclamation-triangle"></i> Simulate High-Risk Event
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <section id="ai-center" class="section">
+        <h2 class="section-header">AI Anomaly Detection Center</h2>
+        <div class="glass-card" style="width:100%; max-width:1200px">
+             <h3 style="color: var(--primary-cyan); text-align:center; margin-bottom: 1rem;">Real-Time Composite Anomaly Score</h3>
+             <div class="chart-container" style="height: 300px;"><canvas id="anomaly-chart"></canvas></div>
+             <div class="feature-description" style="text-align:center; margin-top: 1rem;">The AI model analyzes multiple vectors to generate a single, actionable anomaly score. Alerts are triggered when the score crosses critical thresholds.</div>
+             <div id="ai-factors-log" class="activity-log" style="height: 200px;"></div>
+        </div>
+    </section>
+
+    <section id="blockchain-demo" class="section">
+        <h2 class="section-header">Immutable Event Ledger</h2>
+         <div class="feature-description" style="text-align:center; max-width:800px; margin-bottom:2rem;">Every critical sensor reading, AI prediction, and alert is logged on a tamper-proof blockchain, creating a transparent and auditable record for post-event analysis and accountability.</div>
+        <div class="btn-grid">
+            <button class="action-btn" id="logDataBtn"><i class="fas fa-database"></i> Log Sensor Data Packet</button>
+            <button class="action-btn" id="logAlertBtn"><i class="fas fa-bullhorn"></i> Log Moderate Alert</button>
+            <button class="action-btn" id="logEmergencyBtn"><i class="fas fa-bolt"></i> Log High-Confidence Alert</button>
+            <button class="action-btn" id="mineBlockBtn" disabled><i class="fas fa-cube"></i> Mine Pending Events</button>
+        </div>
+
+        <div class="two-col-layout" style="max-width: 1600px;">
+            <div class="glass-card">
+                <h3 style="margin-bottom: 1.5rem; color: var(--primary-cyan);">📊 Real-Time Activity Monitor</h3>
+                <div class="activity-log" id="activityLog"></div>
+            </div>
+             <div class="glass-card">
+                <h3 style="margin-bottom: 1.5rem; color: var(--primary-cyan);">🛡️ Post-Event Audit Report</h3>
+                <div class="feature-description">Generate an immutable report from the blockchain ledger.</div>
+                <button class="action-btn" style="width:100%"><i class="fas fa-file-alt"></i> Generate Secure Report</button>
+            </div>
+        </div>
+
+        <div class="glass-card" style="width: 100%; max-width: 1600px; margin-top: 2rem;">
+            <h3 style="margin-bottom: 1.5rem; color: var(--primary-cyan);">⛓ Live Blockchain Visualization</h3>
+            <div class="blockchain-container">
+                <div class="blockchain-display" id="blockchainDisplay"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="aegis-wristband" class="section">
+        <h2 class="section-header">The 'Aegis' Villager Wristband</h2>
+        <div class="two-col-layout">
+            <div style="text-align: center;">
+                <img src="image1.jpeg" alt="Aegis Wristband" class="iot-pod-image">
+            </div>
+            <div class="glass-card">
+                <h3 style="color: var(--primary-cyan); margin-bottom: 1rem;"><i class="fas fa-heartbeat"></i> Real-Time Personal Safety</h3>
+                <p class="feature-description">The Aegis wristband is a vital personal safety device for villagers in high-risk zones. It provides one-tap SOS functionality and monitors biometric data, sending real-time updates to the central dashboard, ensuring no one is left behind during an evacuation.</p>
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="iot-sos-button" id="iot-sos-btn">SOS</button>
+                </div>
+                <h4 style="color: var(--primary-cyan); margin-bottom: 1rem;">Live Biometric Feed (Heart Rate)</h4>
+                <div class="chart-container" style="height: 150px;">
+                    <canvas id="biometric-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="iot-pod" class="section">
+        <h2 class="section-header">The 'Jatayu' IoT Sensor Pod</h2>
+        <div class="two-col-layout">
+            <div style="text-align: center;">
+                <img src="image2.jpeg" alt="Jatayu IoT Sensor Pod" class="iot-pod-image">
+            </div>
+            <div class="glass-card">
+                 <h3 style="color: var(--primary-cyan); margin-bottom: 1rem;"><i class="fas fa-satellite-dish"></i> Guardian of the Hills</h3>
+                 <p class="feature-description">The 'Jatayu' is a rugged, all-weather, solar-powered IoT device forming the backbone of our data collection network. Deployed across Uttarakhand, these pods provide continuous, hyperlocal environmental data.</p>
+                 <h4 style="color: var(--primary-cyan); margin-bottom: 1rem;">Technical Specifications:</h4>
+                 <ul class="spec-list">
+                    <li><i class="fas fa-wifi"></i> Connectivity: LoRaWAN, 4G Fallback</li>
+                    <li><i class="fas fa-sun"></i> Power: 20W Solar Panel & Li-ion Battery</li>
+                    <li><i class="fas fa-thermometer-half"></i> Sensors: Rain Gauge, Hygrometer, Barometer</li>
+                    <li><i class="fas fa-shield-alt"></i> Enclosure: IP67 Weatherproof</li>
+                    <li><i class="fas fa-database"></i> On-Chain Logging: All data packets signed & logged</li>
+                 </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="alert-system" class="section">
+         <h2 class="section-header">Multi-Channel Alert System</h2>
+         <div class="feature-description" style="max-width:800px; text-align:center; margin-bottom:2rem;">When a high-risk event is detected, alerts are instantly disseminated through multiple channels to ensure maximum reach, from government bodies to individual citizens.</div>
+         <div class="dashboard-grid">
+             <div class="glass-card">
+                <i class="fas fa-sms feature-icon"></i>
+                <h3 class="feature-title">Community SMS Alerts</h3>
+                <p class="feature-description">Broadcasts are sent to all registered mobile numbers in the predicted impact zone with clear evacuation instructions in local languages.</p>
+             </div>
+             <div class="glass-card">
+                <i class="fas fa-broadcast-tower feature-icon"></i>
+                <h3 class="feature-title">Public Siren System</h3>
+                <p class="feature-description">Integration with public announcement systems and sirens in vulnerable villages and towns, triggered automatically by the AI.</p>
+             </div>
+             <div class="glass-card">
+                <i class="fas fa-mobile-alt feature-icon"></i>
+                <h3 class="feature-title">SDRF & Authority Portal</h3>
+                <p class="feature-description">A dedicated, high-priority channel delivers detailed event data, predicted paths, and resource requirements directly to the State Disaster Response Force.</p>
+             </div>
+         </div>
+    </section>
+    
+    <section id="architecture" class="section">
+        <h2 class="section-header">System Architecture</h2>
+        <div class="glass-card" style="width:100%; max-width: 1400px;">
+            <div class="arch-diagram">
+                <div class="arch-node">
+                    <i class="fas fa-satellite-dish feature-icon"></i>
+                    <h4>Jatayu IoT Pods</h4>
+                </div>
+                <div class="arch-arrow">&rarr;</div>
+                <div class="arch-node">
+                    <i class="fas fa-brain feature-icon"></i>
+                    <h4>AI Prediction Engine</h4>
+                </div>
+                <div class="arch-arrow">&rarr;</div>
+                <div class="arch-node">
+                    <i class="fas fa-cube feature-icon"></i>
+                    <h4>Blockchain Ledger</h4>
+                </div>
+                <div class="arch-arrow">&rarr;</div>
+                 <div class="arch-node">
+                    <i class="fas fa-bullhorn feature-icon"></i>
+                    <h4>Alert Gateway</h4>
+                </div>
+                 <div class="arch-arrow">&rarr;</div>
+                 <div class="arch-node">
+                    <i class="fas fa-users feature-icon"></i>
+                    <h4>Authorities & Public</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating Translator Chatbot -->
+    <button id="translator-btn"><i class="fas fa-language"></i></button>
+    <div id="translator-popup">
+        <iframe
+            src="https://tanushka-lokegaonkar-audio-translator.hf.space"
+            frameborder="0"
+            allow="microphone; autoplay; camera"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+        ></iframe>
+    </div>
+
+    <!-- Library Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Main Application Logic Script -->
+    <script>
+        const MAX_LOG_ENTRIES = 50; 
+        let autoMineTimer = null;
+        let blockchain; // Declare globally, but don't initialize yet
+
+        // --- CORE BLOCKCHAIN LOGIC ---
+        class VarunaBlockchain {
+            constructor() {
+                this.chain = [];
+                this.pendingTransactions = [];
+                this.difficulty = 2;
+                this.createGenesisBlock();
+            }
+            createGenesisBlock() {
+                const genesis = new Block(0, Date.now(), [{ type: 'genesis', data: 'Genesis Block: Varuna Network Initialized' }], '0');
+                genesis.hash = genesis.calculateHash();
+                this.chain.push(genesis);
+            }
+            getLatestBlock() { return this.chain[this.chain.length - 1]; }
+            addTransaction(transaction) {
+                this.pendingTransactions.push(transaction);
+                document.getElementById('mineBlockBtn').disabled = false;
+                const logButtons = document.querySelectorAll('#logDataBtn, #logAlertBtn, #logEmergencyBtn');
+                logButtons.forEach(btn => btn.disabled = true);
+                
+                if (autoMineTimer) clearTimeout(autoMineTimer);
+                logActivity('Auto-mining scheduled in 5 seconds...', 'info', 'fa-clock');
+                autoMineTimer = setTimeout(() => {
+                    document.getElementById('mineBlockBtn').click();
+                }, 5000);
+            }
+            minePendingTransactions() {
+                if (this.pendingTransactions.length === 0) return null;
+                const block = new Block(this.getLatestBlock().index + 1, Date.now(), this.pendingTransactions, this.getLatestBlock().hash);
+                block.mineBlock(this.difficulty);
+                this.chain.push(block);
+                this.pendingTransactions = [];
+                return block;
+            }
+        }
+
+        class Block {
+            constructor(index, timestamp, transactions, previousHash = '') {
+                this.index = index;
+                this.timestamp = timestamp;
+                this.transactions = transactions;
+                this.previousHash = previousHash;
+                this.hash = this.calculateHash();
+                this.nonce = 0;
+            }
+            calculateHash() {
+                return CryptoJS.SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.transactions) + this.nonce).toString();
+            }
+            mineBlock(difficulty) {
+                const target = Array(difficulty + 1).join('0');
+                while (this.hash.substring(0, difficulty) !== target) {
+                    this.nonce++;
+                    this.hash = this.calculateHash();
+                }
+            }
+        }
+
+        // --- UI & SIMULATION LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            blockchain = new VarunaBlockchain(); // Initialize here, safely after CryptoJS has loaded
+            renderBlockchain();
+            createParticles();
+            setupDashboardCharts();
+            setupEventListeners();
+            masterUpdateLoop(); 
+        });
+
+        function setupEventListeners() {
+            document.getElementById('logDataBtn').onclick = () => {
+                const sensorId = `UK-${Math.floor(Math.random() * 100)}`;
+                const data = { rainfall: (Math.random() * 5).toFixed(2), humidity: (Math.random() * 10 + 70).toFixed(2) };
+                const tx = { type: 'sensor-data', data: `Data from ${sensorId}: ${JSON.stringify(data)}` };
+                blockchain.addTransaction(tx);
+                logActivity(`-> Sensor data from ${sensorId} added to mempool.`, 'info', 'fa-database');
+            };
+            document.getElementById('logAlertBtn').onclick = () => {
+                const tx = { type: 'medium-risk', data: `AI Alert: Moderate risk detected - Anomalous pressure drop.` };
+                blockchain.addTransaction(tx);
+                logActivity(`-> Moderate risk alert added to mempool.`, 'warning', 'fa-bullhorn');
+            };
+             document.getElementById('logEmergencyBtn').onclick = () => {
+                const tx = { type: 'high-risk', data: `AI ALERT: HIGH CONFIDENCE CLOUDBURST PREDICTION.` };
+                blockchain.addTransaction(tx);
+                logActivity(`-> HIGH-RISK alert added to mempool.`, 'danger', 'fa-bolt');
+            };
+            document.getElementById('mineBlockBtn').onclick = () => {
+                if(autoMineTimer) clearTimeout(autoMineTimer);
+                const logButtons = document.querySelectorAll('#logDataBtn, #logAlertBtn, #logEmergencyBtn');
+                logButtons.forEach(btn => btn.disabled = false);
+
+                if (blockchain.pendingTransactions.length === 0) {
+                     logActivity('No pending events to mine.', 'warning', 'fa-exclamation-circle');
+                     return;
+                }
+                const btn = document.getElementById('mineBlockBtn');
+                btn.innerHTML = '<div class="loading-spinner"></div> Mining...';
+                btn.disabled = true;
+                setTimeout(() => {
+                    const newBlock = blockchain.minePendingTransactions();
+                    if (newBlock) {
+                        appendNewBlock(newBlock);
+                        logActivity(`Block #${newBlock.index} successfully mined.`, 'success', 'fa-cube');
+                    }
+                    btn.innerHTML = '<i class="fas fa-cube"></i> Mine Pending Events';
+                    btn.disabled = (blockchain.pendingTransactions.length === 0);
+                }, 1500);
+            };
+            document.getElementById('simulate-alert-btn').addEventListener('click', triggerMajorAlert);
+            document.getElementById('alert-dismiss-btn').addEventListener('click', () => {
+                document.getElementById('alert-modal').classList.remove('show');
+            });
+            document.getElementById('iot-sos-btn').onclick = () => {
+                const btn = document.getElementById('iot-sos-btn');
+                btn.classList.add('active');
+                const tx = { type: 'high-risk', data: `Personal SOS signal from Aegis Wristband #V783` };
+                blockchain.addTransaction(tx);
+                logActivity(`-> PERSONAL SOS from Aegis Wristband added to mempool.`, 'danger', 'fa-heartbeat');
+                setTimeout(() => btn.classList.remove('active'), 2000);
+            };
+
+            const translatorBtn = document.getElementById('translator-btn');
+            const translatorPopup = document.getElementById('translator-popup');
+            translatorBtn.onclick = () => {
+                translatorPopup.classList.toggle('show');
+            };
+        }
+
+        function logActivity(message, type = 'info', icon = 'fa-info-circle') {
+            const activityLog = document.getElementById('activityLog');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.innerHTML = `<i class="fas ${icon}" style="margin-right: 0.8rem;"></i><span>${message}</span><small style="margin-left: auto;">${new Date().toLocaleTimeString()}</small>`;
+            activityLog.insertBefore(entry, activityLog.firstChild);
+            
+            while (activityLog.children.length > MAX_LOG_ENTRIES) {
+                activityLog.removeChild(activityLog.lastChild);
+            }
+        }
+
+        function renderBlockchain() {
+            const display = document.getElementById('blockchainDisplay');
+            display.innerHTML = '';
+            blockchain.chain.forEach(block => appendNewBlock(block, true));
+        }
+        
+        function appendNewBlock(block, isInitialLoad = false) {
+             const display = document.getElementById('blockchainDisplay');
+             const blockEl = document.createElement('div');
+             blockEl.className = 'block';
+             blockEl.innerHTML = `
+                 <div class="block-header"><div class="block-index">Block #${block.index}</div></div>
+                 <div class="hash-display"><strong>Hash:</strong><br>${block.hash}</div>
+                 <div class="hash-display"><strong>Prev Hash:</strong><br>${block.previousHash}</div>
+                 <div class="transaction-list">
+                     <strong>Events (${block.transactions.length}):</strong>
+                     ${block.transactions.map(tx => `<div class="transaction-item ${tx.type}">${tx.data}</div>`).join('')}
+                 </div>`;
+             display.appendChild(blockEl);
+             setTimeout(() => {
+                 blockEl.style.opacity = '1';
+                 blockEl.style.transform = 'translateY(0)';
+                 if(!isInitialLoad && display.parentElement) {
+                     display.parentElement.scrollLeft = display.parentElement.scrollWidth;
+                 }
+             }, 100);
+        }
+        
+        // --- DASHBOARD & DATA SIMULATION ---
+        let rainfallChart, humidityChart, pressureChart, anomalyChart, biometricChart;
+        function setupDashboardCharts(){
+            const chartOptions = {
+                responsive: true, maintainAspectRatio: false,
+                scales: { 
+                    y: { beginAtZero: false, ticks: { color: 'var(--text-secondary)' } }, 
+                    x: { ticks: { display: false } } 
+                },
+                plugins: { legend: { display: false } }
+            };
+            const createChart = (ctxId, color) => new Chart(document.getElementById(ctxId).getContext('2d'), {
+                type: 'line',
+                data: { labels: Array(20).fill(''), datasets: [{ data: [], borderColor: color, fill: true, backgroundColor: `${color}33`, tension: 0.4, pointRadius: 0 }] },
+                options: chartOptions
+            });
+            rainfallChart = createChart('rainfall-chart', 'var(--electric-blue)');
+            humidityChart = createChart('humidity-chart', 'var(--primary-cyan)');
+            pressureChart = createChart('pressure-chart', 'var(--neon-purple)');
+            anomalyChart = createChart('anomaly-chart', 'var(--warning-orange)');
+            biometricChart = createChart('biometric-chart', 'var(--neon-green)');
+        }
+
+        function updateChart(chart, newDataPoint) {
+            const dataArray = chart.data.datasets[0].data;
+            if (dataArray.length >= 20) dataArray.shift();
+            dataArray.push(newDataPoint);
+            chart.data.labels = Array(dataArray.length).fill('');
+            chart.update('none');
+        }
+
+        function masterUpdateLoop() {
+            const aiLog = document.getElementById('ai-factors-log');
+            setInterval(() => {
+                let rainfall = Math.random() * 5;
+                let humidity = 75 + Math.random() * 10;
+                let pressure = 1010 - Math.random() * 5;
+                let anomalyScore = (rainfall / 5) * 30 + ((humidity - 75) / 10) * 20 + ((1010 - pressure) / 5) * 50;
+                let heartRate = 75 + Math.random() * 10;
+
+                document.getElementById('rainfall-stat').textContent = rainfall.toFixed(2);
+                document.getElementById('humidity-stat').textContent = humidity.toFixed(2);
+                document.getElementById('pressure-stat').textContent = pressure.toFixed(2);
+
+                updateChart(rainfallChart, rainfall);
+                updateChart(humidityChart, humidity);
+                updateChart(pressureChart, pressure);
+                updateChart(anomalyChart, anomalyScore);
+                updateChart(biometricChart, heartRate);
+                
+                updateHeatmapRisk();
+
+                if (anomalyScore > 60 && Math.random() > 0.8) {
+                    const entry = document.createElement('div');
+                    entry.className = `log-entry warning`;
+                    entry.innerHTML = `<i class="fas fa-exclamation-triangle" style="margin-right: 0.8rem;"></i><span>AI INFO: Detected rapid pressure drop. Monitoring...</span>`;
+                    aiLog.insertBefore(entry, aiLog.firstChild);
+                    while (aiLog.children.length > MAX_LOG_ENTRIES) {
+                        aiLog.removeChild(aiLog.lastChild);
+                    }
+                }
+            }, 2000);
+        }
+        
+        // --- GOOGLE MAPS API LOGIC (OPTIMIZED with Deck.gl) ---
+        let map, deckglOverlay, sensorPoints = [], inundationPath = null, alertMarker = null;
+        const UK_BOUNDS = { north: 31.45, south: 28.71, west: 77.57, east: 81.04 };
+
+        function initMap() {
+            const center = { lat: 30.0869, lng: 79.3138 }; 
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 8, center: center,
+                styles: [ { elementType: "geometry", stylers: [{ color: "#242f3e" }] }, { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] }, { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] }, { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }] }, { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }] }, { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#263c3f" }] }, { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#6b9a76" }] }, { featureType: "road", elementType: "geometry", stylers: [{ color: "#38414e" }] }, { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#212a37" }] }, { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#9ca5b3" }] }, { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#746855" }] }, { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#1f2835" }] }, { featureType: "road.highway", elementType: "labels.text.fill", stylers: [{ color: "#f3d19c" }] }, { featureType: "transit", elementType: "geometry", stylers: [{ color: "#2f3948" }] }, { featureType: "transit.station", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }] }, { featureType: "water", elementType: "geometry", stylers: [{ color: "#17263c" }] }, { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#515c6d" }] }, { featureType: "water", elementType: "labels.text.stroke", stylers: [{ color: "#17263c" }] }, ]
+            });
+            
+            generateInitialSensorPoints();
+
+            deckglOverlay = new deck.GoogleMapsOverlay({});
+            deckglOverlay.setMap(map);
+        }
+
+        function generateInitialSensorPoints() {
+            for (let i = 0; i < 100; i++) {
+                const lat = UK_BOUNDS.south + Math.random() * (UK_BOUNDS.north - UK_BOUNDS.south);
+                const lng = UK_BOUNDS.west + Math.random() * (UK_BOUNDS.east - UK_BOUNDS.west);
+                sensorPoints.push({ location: new google.maps.LatLng(lat, lng), risk: Math.random() });
+            }
+        }
+        
+        function updateHeatmapRisk() {
+            if (!deckglOverlay || typeof deck === 'undefined') return;
+            sensorPoints.forEach(point => {
+                point.risk += (Math.random() - 0.45);
+                if (point.risk < 0) point.risk = 0;
+                if (point.risk > 5) point.risk = 5; 
+            });
+
+            const heatmapData = sensorPoints.map(p => ({
+                coordinates: [p.location.lng(), p.location.lat()],
+                weight: p.risk
+            }));
+            
+            const heatmapLayer = new deck.HeatmapLayer({
+                id: 'heatmapLayer',
+                data: heatmapData,
+                getPosition: d => d.coordinates,
+                getWeight: d => d.weight,
+                aggregation: 'MEAN',
+                radiusPixels: 40,
+                intensity: 2,
+                threshold: 0.05,
+                colorRange: [
+                    [57, 255, 20],   // neon-green
+                    [255, 215, 0],  // yellow
+                    [255, 140, 0],  // warning-orange
+                    [255, 69, 0],
+                    [255, 7, 58],   // danger-red
+                    [255, 0, 0]
+                ]
+            });
+            
+            deckglOverlay.setProps({
+                layers: [heatmapLayer]
+            });
+        }
+        
+        function triggerMajorAlert() {
+             if (inundationPath) inundationPath.setMap(null);
+             if (alertMarker) alertMarker.setMap(null);
+
+             const alertPodIndex = Math.floor(Math.random() * 100);
+             const startPoint = sensorPoints[alertPodIndex].location;
+             
+             sensorPoints[alertPodIndex].risk = 50; 
+             
+             alertMarker = new google.maps.Marker({
+                 position: startPoint,
+                 map: map,
+                 icon: { path: google.maps.SymbolPath.CIRCLE, scale: 8, fillColor: 'red', fillOpacity: 1, strokeColor: 'white', strokeWeight: 2 },
+                 animation: google.maps.Animation.BOUNCE
+             });
+             
+             const pathCoordinates = [startPoint.toJSON()];
+             let currentLat = startPoint.lat();
+             let currentLng = startPoint.lng();
+             for(let i=0; i<30; i++) {
+                 currentLat -= (0.005 + Math.random() * 0.005); 
+                 currentLng += (Math.random() - 0.5) * 0.01;
+                 pathCoordinates.push({ lat: currentLat, lng: currentLng });
+             }
+
+             inundationPath = new google.maps.Polyline({
+                 path: pathCoordinates,
+                 geodesic: true,
+                 strokeColor: '#00ffff',
+                 strokeOpacity: 0.8,
+                 strokeWeight: 4,
+             });
+             inundationPath.setMap(map);
+             map.panTo(startPoint);
+             map.setZoom(11);
+             
+             document.getElementById('alert-modal').classList.add('show');
+             setTimeout(() => { 
+                 if (alertMarker) alertMarker.setAnimation(null);
+                 sensorPoints[alertPodIndex].risk = 3; 
+             }, 4000);
+        }
+
+        // --- BACKGROUND ANIMATIONS ---
+        function createParticles() {
+            const particleSystem = document.getElementById('particleSystem');
+            let lastTime = 0;
+            const particleInterval = 500; 
+
+            function animationLoop(currentTime) {
+                if (currentTime - lastTime > particleInterval) {
+                     if (document.querySelectorAll('.floating-particle').length < 30) {
+                        const p = document.createElement('div');
+                        p.className = 'floating-particle';
+                        p.style.left = Math.random() * 100 + '%';
+                        p.style.width = p.style.height = (Math.random() * 4 + 2) + 'px';
+                        p.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                        p.style.animationDelay = '-' + Math.random() * 20 + 's';
+                        particleSystem.appendChild(p);
+                        setTimeout(() => p.remove(), 25000);
+                    }
+                    lastTime = currentTime;
+                }
+                requestAnimationFrame(animationLoop);
+            }
+            requestAnimationFrame(animationLoop);
+        }
+    </script>
+
+    <!-- Asynchronous Map Library Scripts -->
+    <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?callback=initMap&libraries=geometry"></script>
+
+
+</body>
+</html>
